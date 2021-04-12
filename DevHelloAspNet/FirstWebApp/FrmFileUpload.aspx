@@ -1,5 +1,5 @@
 ﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="FrmFileUpload.aspx.cs" Inherits="FirstWebApp.FrmFileUpload" %>
-
+<%@ OutputCache Duration="60" VaryByParam="None" %>
 <!DOCTYPE html>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -11,8 +11,18 @@
     <form id="form1" runat="server">
         <div>
             <asp:FileUpload runat="server" ID="CtlUpload" />
-            <asp:Button ID="BtnUpLoad" Text="업로드" runat="server" /><br />
+            <asp:Button ID="BtnUpLoad" Text="업로드" runat="server"  OnClick="BtnUpLoad_Click" /><br />
             <asp:Label ID="LblResult" runat="server" />
+            <div>
+                <asp:Label ID="LblCached" runat="server" /><br />
+                <asp:Substitution ID="SstMain" runat="server" MethodName="GetCurrenTime" />
+            </div>
+            <div>
+                <asp:Localize ID="LblLocal1" runat="server" Text="안녕하세요"></asp:Localize>
+                <br />
+                <asp:Localize ID="LblLocal2" runat="server"
+                     Text="<hr /><b>안녕하세요</b>" Mode="Encode"></asp:Localize>
+            </div>
         </div>
     </form>
 </body>
