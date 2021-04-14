@@ -4,7 +4,7 @@ using System;
 namespace Helpers.Test
 {
     [TestClass]
-    public class StringLibraryTest
+    public class StringLibraryTest 
     {
         [TestMethod]
         public void CutStringTest()
