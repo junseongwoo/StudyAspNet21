@@ -17,6 +17,7 @@ namespace Helpers.Test
             var actual = StringLibrary.CutString(strCut, intChar);
             Assert.AreEqual(expected, actual);
         }
+        
 
         [TestMethod]
         public void CutStringUnicodeTest()
@@ -29,12 +30,29 @@ namespace Helpers.Test
             Assert.AreEqual(expected, actual);
         }
 
+        [Ignore]
         [TestMethod]
         public void AddTest()
         {
             var expected = 10;
             var actual = (5 + 5);
             Assert.AreEqual(expected, actual);
+        }
+
+        [TestMethod]
+        public void IsPhotoTest()
+        {
+            var imagePath = @"D:\sources\GitRepository\StudyDesktopApp\ResultImg\WinIot2.png";
+            bool result = BoardLibrary.IsPhoto(imagePath);
+            Assert.IsTrue(result, "file extension must be png, jpg, gif");
+        }
+
+        [TestMethod]
+        public void IsNotPhotoTest()
+        {
+            var imagePath = @"D:\sources\GitRepository\StudyDesktopApp\ResultImg\WinIot2.png";
+            bool result = BoardLibrary.IsPhoto(imagePath);
+            Assert.IsFalse(result, "file extension must be png, jpg, gif");
         }
     }
 }
