@@ -1,5 +1,8 @@
 ﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="BoardView.aspx.cs" Inherits="DotNetNote.Board.BoardView" %>
 
+<%@ Register Src="~/Controls/CommentControl.ascx" TagPrefix="uc1" TagName="CommentControl" %>
+
+
 <asp:Content ID="Content1" ContentPlaceHolderID="MainContent" runat="server">
     <h3 class="text-center">글 보기 - 상세보기</h3>
     <span style="color: #ff0000">글 보기 - 현재 글에 대해서 수정 및 삭제를 할 수 있습니다. </span>
@@ -78,6 +81,8 @@
                         Width="100%" Height="115px"></asp:Label>
                 </td>
             </tr>
+            <br />
+            
             <tr>
                 <td colspan="4">
                     <hr />
@@ -85,7 +90,7 @@
             </tr>
             <tr>
                 <td colspan="4">
-
+                    <uc1:CommentControl runat="server" ID="CommentControl1" />
                     <%--<uc1:BoardCommentControl runat="server" 
                         ID="BoardCommentControl" />--%>
 

@@ -1,6 +1,7 @@
 ﻿using DotNetNote.Models;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.UI;
@@ -12,14 +13,26 @@ namespace DotNetNote.Board
     {
         public BoardWriteFormType FormType { get; set; } = BoardWriteFormType.Write; // 글 쓰기가 기본값 
 
-        private string _Id; // 리스트에서 넘겨주는 번호
+        private string _Id;   // 리스트에서 넘겨주는 번호
+        //private string _Mode; // 뷰에서 넘겨주는 모드값 
+        
+        private string _BaseDir = "";  // files 폴더 지정 
+        private string _FileName = ""; // 파일명
+        private int _FileSize = 0;     // 파일 사이즈 
+
 
         protected void Page_Load(object sender, EventArgs e)
         {
             _Id = Request["Id"];
+            
 
             if (!Page.IsPostBack)
             {
+                ViewState["Mode"] = Request["Mode"]; // EDIT 
+                if (ViewState["Mode"].ToString() == "Edit") FormType = BoardWriteFormType.Modify;
+                else if (ViewState["Mode"].ToString() == "Reply") FormType = BoardWriteFormType.Reply;
+                else FormType = BoardWriteFormType.Write;
+
                 switch (FormType)
                 {
                     case BoardWriteFormType.Write:
@@ -39,16 +52,37 @@ namespace DotNetNote.Board
 
         private void DisplayDataForModify()
         {
-            throw new NotImplementedException();
+            var repo = new DbRepository();
+            Note note = repo.GetNoteById(Convert.ToInt32(_Id));
+
+            txtName.Text = note.Name;
+            txtEmail.Text = note.Email;
+            txtHomepage.Text = note.Homepage;
+            txtTitle.Text = note.Title;
+            txtContent.Text = note.Content;
+
+            //Encoding 
+            string encoding = note.Encoding;
+            if (encoding == "Text") rdoEncoding.SelectedIndex = 0;
+            else if (encoding == "Mixed") rdoEncoding.SelectedIndex = 2;
+            else rdoEncoding.SelectedIndex = 1;
+
+            //TODO 파일 처리 
         }
 
         private void DisplayDataForReply()
         {
-            throw new NotImplementedException();
+            var repo = new DbRepository();
+            Note note = repo.GetNoteById(Convert.ToInt32(_Id));
+
+            txtTitle.Text = $"답변 : {note.Title}";
+            txtContent.Text = $"\n\n작성일: {note.PostDate}, 작성자 : '{note.Name}'\n---------------------\n>" +
+                $"{note.Content.Replace("\n","\n>")}\n--------------------\n";
         }
 
         protected void chkUpload_CheckedChanged(object sender, EventArgs e)
         {
+            pnlFile.Visible = !pnlFile.Visible;
 
         }
 
@@ -56,7 +90,12 @@ namespace DotNetNote.Board
         {
             if (IsImageTextCorrect())
             {
+                if (ViewState["Mode"].ToString() == "Edit") FormType = BoardWriteFormType.Modify;
+                else if (ViewState["Mode"].ToString() == "Reply") FormType = BoardWriteFormType.Reply;
+                else FormType = BoardWriteFormType.Write;
+
                 // 파일 업로드 
+                UploadFile();
 
                 Note note = new Note();
                 note.Id = Convert.ToInt32(_Id);
@@ -65,8 +104,8 @@ namespace DotNetNote.Board
                 note.Title = txtTitle.Text; //초기화 할 것 
                 note.Homepage = txtHomepage.Text;
                 note.Content = txtContent.Text;
-                note.FileName = "";
-                note.FileSize = 0;
+                note.FileName = _FileName;
+                note.FileSize = _FileSize;
                 note.Password = txtPassword.Text;
                 note.PostIp = Request.UserHostAddress;
                 note.Encoding = rdoEncoding.SelectedValue; // Text, Html. Mixed
@@ -80,16 +119,62 @@ namespace DotNetNote.Board
                         Response.Redirect("BoardList.aspx");
                         break;
                     case BoardWriteFormType.Modify:
+                        note.ModifyIp = Request.UserHostAddress;
+                        //file 처리
+                        note.FileName = ViewState["FileName"].ToString();
+                        note.FileSize = Convert.ToInt32(ViewState["FileSize"]);
+                        if (repo.UpdateNote(note) > 0) Response.Redirect($"BoardView.aspx?Id={_Id}");
+                        else lblError.Text = "업데이트 실패, 암호를 확인하세요";
                         break;
                     case BoardWriteFormType.Reply:
+                        note.ParentNum = Convert.ToInt32(_Id);
+                        repo.ReplyNote(note);
+                        Response.Redirect("BoardList.aspx");
                         break;
                     default:
+                        repo.Add(note);
+                        Response.Redirect("BoardList.aspx");
                         break;
                 }
             }
             else
             {
                 lblError.Text = "보안코드가 틀립니다. 다시 입력하세요";
+            }
+        }
+
+        /// <summary>
+        /// 추가 : 파일 업로드 처리 
+        /// </summary>
+        private void UploadFile()
+        {
+            _BaseDir = Server.MapPath("../Files"); // Files의 경로를 자동으로 찾아서 감 
+            _FileName = "";
+            _FileSize = 0;
+
+            if (txtFileName.PostedFile != null)
+            {
+                if (txtFileName.PostedFile.FileName.Trim().Length != 0 &&
+                    txtFileName.PostedFile.ContentLength > 0)
+                {
+                    if (FormType == BoardWriteFormType.Modify) // 수정일 경우만
+                    {
+                        ViewState["FileName"] =
+                            Helpers.FileUtility.GetFileNameWithNumbering(_BaseDir, Path.GetFileName(txtFileName.PostedFile.FileName));
+                        ViewState["FileName"] = txtFileName.PostedFile.ContentLength;
+                        //업로드
+                        txtFileName.PostedFile.SaveAs(Path.Combine(_BaseDir, ViewState["FileName"].ToString()));
+                    }
+                    else // 다른 경우 
+                    {
+                        // 이미 똑같은 파일이 있으면 (숫자) 를 붙여서 
+                        _FileName = 
+                            Helpers.FileUtility.GetFileNameWithNumbering(_BaseDir, Path.GetFileName(txtFileName.PostedFile.FileName));
+                        _FileSize = txtFileName.PostedFile.ContentLength;
+                        //업로드
+                        txtFileName.PostedFile.SaveAs(Path.Combine(_BaseDir, _FileName));
+                    }
+                }
             }
         }
 
