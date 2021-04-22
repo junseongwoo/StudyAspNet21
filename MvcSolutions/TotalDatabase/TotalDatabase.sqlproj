@@ -3,16 +3,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <Name>MvcWebLab.Database</Name>
+    <Name>TotalDatabase</Name>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectVersion>4.1</ProjectVersion>
-    <ProjectGuid>{51200bbc-f361-4e26-b9f4-46d76fcf366a}</ProjectGuid>
+    <ProjectGuid>{58aeb52c-7092-41a8-a99c-fd6e788a0394}</ProjectGuid>
     <DSP>Microsoft.Data.Tools.Schema.Sql.Sql130DatabaseSchemaProvider</DSP>
     <OutputType>Database</OutputType>
     <RootPath>
     </RootPath>
-    <RootNamespace>MvcWebLab.Database</RootNamespace>
-    <AssemblyName>MvcWebLab.Database</AssemblyName>
+    <RootNamespace>TotalDatabase</RootNamespace>
+    <AssemblyName>TotalDatabase</AssemblyName>
     <ModelCollation>1042,CI</ModelCollation>
     <DefaultFileStructure>BySchemaAndSchemaType</DefaultFileStructure>
     <DeployToDatabase>True</DeployToDatabase>
@@ -66,5 +66,10 @@
     <Build Include="dbo\Tables\Speakers.sql" />
     <Build Include="dbo\Tables\Rooms.sql" />
     <Build Include="dbo\Tables\Todos.sql" />
+    <Build Include="dbo\Tables\Contact.sql" />
+    <Build Include="dbo\Tables\Boards.sql" />
+    <Build Include="dbo\Tables\Account.sql" />
+    <Build Include="dbo\Tables\Pages.sql" />
+    <Build Include="dbo\Tables\Manages.sql" />
   </ItemGroup>
 </Project>
