@@ -20,33 +20,33 @@ namespace MyPortpolio.Controllers
         }
 
         // GET: Contacts
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             return View();
         }
 
         [HttpPost]
-        public async Task<IActionResult> Index([Bind()] Contact contact)
-        {
-
-        }
-
-        // POST: Contacts/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
-        // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Email,Contents,RegDate")] Contact contact)
+        public async Task<IActionResult> Index([Bind("Id,Name,Email,Contents")] Contact contact)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(contact);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                try
+                {
+                    contact.RegDate = DateTime.Now;
+                    _context.Add(contact);
+                    await _context.SaveChangesAsync();
+
+                    ViewBag.Message = "감사합니다. 연락드리겠습니다.";
+                }
+                catch (Exception ex)
+                {
+                    ModelState.Clear();
+                    ViewBag.Message = $"예외가 발생했습니다. {ex.Message}";
+                }
+                // return RedirectToAction(nameof(Index));
             }
-            return View(contact);
+            return View();
         }
-
-
     }
 }

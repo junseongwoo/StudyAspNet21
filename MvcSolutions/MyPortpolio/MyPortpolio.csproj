@@ -18,6 +18,7 @@
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="5.0.2" />
+    <PackageReference Include="X.PagedList.Mvc.Core" Version="8.0.7" />
   </ItemGroup>
 
   <ItemGroup>
@@ -33,6 +34,14 @@
     <Folder Include="wwwroot\lib\jquery-validation\dist\" />
     <Folder Include="wwwroot\lib\jquery\" />
     <Folder Include="wwwroot\lib\jquery\dist\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Include="Views\Board\Create.cshtml" />
+    <None Include="Views\Board\Delete.cshtml" />
+    <None Include="Views\Board\Details.cshtml" />
+    <None Include="Views\Board\Edit.cshtml" />
+    <None Include="Views\Board\Index.cshtml" />
   </ItemGroup>
 
 </Project>
