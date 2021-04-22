@@ -10,22 +10,22 @@ using MyPortpolio.Models;
 
 namespace MyPortpolio.Controllers
 {
-    public class ManagesController : Controller
+    public class ManageController : Controller
     {
         private readonly ApplicationDbContext _context;
 
-        public ManagesController(ApplicationDbContext context)
+        public ManageController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: Manages
+        // GET: Manage
         public async Task<IActionResult> Index()
         {
             return View(await _context.Manages.ToListAsync());
         }
 
-        // GET: Manages/Details/5
+        // GET: Manage/Details/5
         public async Task<IActionResult> Details(int? id)
         {
             if (id == null)
@@ -43,13 +43,13 @@ namespace MyPortpolio.Controllers
             return View(manage);
         }
 
-        // GET: Manages/Create
+        // GET: Manage/Create
         public IActionResult Create()
         {
             return View();
         }
 
-        // POST: Manages/Create
+        // POST: Manage/Create
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -58,6 +58,7 @@ namespace MyPortpolio.Controllers
         {
             if (ModelState.IsValid)
             {
+                manage.RegDate = DateTime.Now;
                 _context.Add(manage);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -65,7 +66,7 @@ namespace MyPortpolio.Controllers
             return View(manage);
         }
 
-        // GET: Manages/Edit/5
+        // GET: Manage/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
             if (id == null)
@@ -81,7 +82,7 @@ namespace MyPortpolio.Controllers
             return View(manage);
         }
 
-        // POST: Manages/Edit/5
+        // POST: Manage/Edit/5
         // To protect from overposting attacks, enable the specific properties you want to bind to.
         // For more details, see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
@@ -116,7 +117,7 @@ namespace MyPortpolio.Controllers
             return View(manage);
         }
 
-        // GET: Manages/Delete/5
+        // GET: Manage/Delete/5
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -134,7 +135,7 @@ namespace MyPortpolio.Controllers
             return View(manage);
         }
 
-        // POST: Manages/Delete/5
+        // POST: Manage/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)

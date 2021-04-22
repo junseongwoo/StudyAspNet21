@@ -23,4 +23,4 @@ namespace MyPortpolio.Models
         [DataType(DataType.DateTime)]
         public DateTime RegDate { get; set; }
     }
-}   
+}

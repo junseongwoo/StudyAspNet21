@@ -21,12 +21,12 @@ namespace MyPortpolio.Controllers
         }
 
         // GET: Board
-        public IActionResult Index(int? page)
+        public async Task<IActionResult> Index(int? page)
         {
             var pageNumber = page ?? 1; // page값이 널이면 1
             var pageSize = 10; // 조정필요
 
-            var boards = _context.Boards.ToPagedList(pageNumber, pageSize);
+            var boards = await _context.Boards.ToPagedListAsync(pageNumber, pageSize);
             return View(boards);
         }
 
@@ -44,6 +44,11 @@ namespace MyPortpolio.Controllers
             {
                 return NotFound();
             }
+
+            // ReadCount 증가
+            board.ReadCount += 1;
+            _context.Boards.Update(board);
+            _context.SaveChanges(); // Commit!!
 
             return View(board);
         }
