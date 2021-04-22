@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using MyPortpolio.Data;
 using MyPortpolio.Models;
 using System;
 using System.Collections.Generic;
@@ -11,11 +12,15 @@ namespace MyPortpolio.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        private readonly ApplicationDbContext _context;
 
-        public HomeController(ILogger<HomeController> logger)
+        private readonly ILogger<HomeController> _logger;
+        
+
+        public HomeController(ILogger<HomeController> logger, ApplicationDbContext context)
         {
             _logger = logger;
+            _context = context;
         }
 
         public IActionResult Index()
@@ -30,6 +35,8 @@ namespace MyPortpolio.Controllers
 
         public IActionResult Profile()
         {
+            var profile = _context.Manages.SingleOrDefault(p => p.Cate.Equals("Profile"));
+
             return View();
         }
 
